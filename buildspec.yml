@@ -1,0 +1,19 @@
+version: 0.2
+env:
+  parameter-store:
+    DOCKER_USER: "/pyapp/docker-hub/username"
+    DOCKER_PASS: "/pyapp/docker-hub/password"
+    DOCKER_URL: "/pyapp/docker-hub/url"  
+phases:
+  pre_build:
+    commands:
+      - echo "login to Docker HUB"
+      - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+  build:
+    commands:
+      - echo "Building the Docker image on `date`" 
+      - docker build -t $DOCKER_URL/$DOCKER_USER/cloudnative-jan:latest .
+  post_build:
+    commands:
+      - echo "pushing the image to docker hub repo on `date`"
+      - docker push $DOCKER_URL/$DOCKER_USER/cloudnative-jan:latest
